@@ -7,7 +7,7 @@ CI/CD pipeline that runs SAST and SCA on every push.
 **Variant:** CVE-2017-5638 (Apache Struts 2, S2-045)
 **Student:** Pan Hongzhou · **HDU number:** 23320333
 
-![Security CI](https://github.com/YOUR_GITHUB_USERNAME/secure-notes-api/actions/workflows/ci.yml/badge.svg)
+![Security CI](https://github.com/M1racle1234/my-project/actions/workflows/ci.yml/badge.svg)
 
 > **Status.** The API, the security controls, the automated test suite, the CI/CD
 > pipeline and the CVE stage are complete. 59 tests pass, Bandit and pip-audit are clean,
@@ -270,11 +270,15 @@ Three jobs, all pinned to Python 3.12 on `ubuntu-latest`:
 `needs: test` means Bandit and pip-audit only run after the tests pass. Both reports are
 also appended to the **Actions run summary**, which is the easiest page to screenshot.
 
-**Screenshots of the reports must be taken from the Actions tab of the public
-repository** (see [`docs/screenshots/README.md`](docs/screenshots/README.md)). They
-cannot be produced until the repository is pushed and the first workflow run finishes.
+**Screenshots of the reports are taken from the Actions tab of the public
+repository** (<https://github.com/M1racle1234/my-project/actions>) — see
+[`docs/screenshots/README.md`](docs/screenshots/README.md). The first workflow run starts
+automatically with the initial push; its link is recorded below once it finishes.
 
-Latest successful run: `TODO — replace with the Actions run URL after the first push.`
+Repository: <https://github.com/M1racle1234/my-project>
+
+Latest run: pending the first push — see
+<https://github.com/M1racle1234/my-project/actions/workflows/ci.yml>.
 
 Local equivalents (real output captured in [`docs/evidence/`](docs/evidence/)):
 
@@ -441,15 +445,15 @@ demonstrated impact is command execution inside the container, not on the Window
 
 | Assignment requirement | Where |
 | --- | --- |
-| Public git repository with project code | this repository (push pending) |
+| Public git repository with project code | <https://github.com/M1racle1234/my-project> |
 | README: project and API description | this file, [API reference](#api-reference) |
 | README: security measures in detail | [Security measures](#security-measures) |
-| README: SAST/SCA screenshots from Actions | `docs/screenshots/` (to be captured after push) |
+| README: SAST/SCA screenshots from Actions | CI screenshots to be added after the first run (CVE screenshots are in `docs/screenshots/`) |
 | README: CVE ID and description | [CVE analysis](#cve-analysis-cve-2017-5638) |
 | README: reproduction sequence with commands/screenshots | [CVE analysis](#cve-analysis-cve-2017-5638) + [`cve/s2-045/README.md`](cve/s2-045/README.md) |
 | README: root cause analysis | section above + [`cve/s2-045/README.md`](cve/s2-045/README.md) |
 | README: fix description and proof of elimination | section above + [`docs/evidence/cve/`](docs/evidence/cve/) |
-| Link to last successful pipeline run | `TODO` — Actions run URL |
+| Link to last successful pipeline run | <https://github.com/M1racle1234/my-project/actions/workflows/ci.yml> |
 | Folder with fixes (compose/Dockerfile/source) | [`cve/s2-045/`](cve/s2-045/) (`Dockerfile.fixed`, `docker-compose.fixed.yml`) |
 | Report with title page (work, variant, name, HDU number) | `Work1_Report_Pan_Hongzhou.docx` in the parent folder |
 
