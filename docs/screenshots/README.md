@@ -8,10 +8,10 @@ the names below; the report references them.
 
 | File | What to capture | Where |
 | --- | --- | --- |
-| `01-actions-run.png` | The whole workflow run: three green jobs (`test`, `sast`, `sca`) | Repository → **Actions** → latest `Security CI` run |
-| `02-bandit-summary.png` | Bandit report rendered in the run summary (`No issues identified`) | Same run → **Summary** |
-| `03-pip-audit-summary.png` | pip-audit JSON/summary showing no vulnerabilities | Same run → **Summary** |
-| `04-artifacts.png` | The two uploaded artifacts (`bandit-report`, `pip-audit-report`) | Run page → **Artifacts** |
+| `01-actions-run.png` | **Captured** — the whole workflow run: three green jobs (`test`, `sast`, `sca`) | Repository → **Actions** → latest `Security CI` run |
+| `02-bandit-summary.png` | Bandit report rendered in the run summary (`No issues identified`) | Same run → **Summary** (needs a signed-in session) |
+| `03-pip-audit-summary.png` | pip-audit JSON/summary showing no vulnerabilities | Same run → **Summary** (needs a signed-in session) |
+| `04-artifacts.png` | **Captured** — the two uploaded artifacts (`bandit-report`, `pip-audit-report`) | Run page → **Artifacts** |
 
 ## 2. API behaviour (Postman or curl)
 

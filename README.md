@@ -9,12 +9,13 @@ CI/CD pipeline that runs SAST and SCA on every push.
 
 ![Security CI](https://github.com/M1racle1234/my-project/actions/workflows/ci.yml/badge.svg)
 
-> **Status.** The API, the security controls, the automated test suite, the CI/CD
-> pipeline and the CVE stage are complete. 59 tests pass, Bandit and pip-audit are clean,
-> and CVE-2017-5638 was reproduced against Vulhub (Struts 2.3.30) and remediated by
-> upgrading to 2.3.32 — the same exploit no longer succeeds. What remains is publishing
-> the repository so the Actions run and its screenshots can be produced; the pipeline
-> link and screenshots are the only unfinished submission items.
+> **Status.** All three stages are complete and published. 59 tests pass, Bandit and
+> pip-audit are clean, the public CI run succeeded (3/3 jobs, 42 s), and CVE-2017-5638
+> was reproduced against Vulhub (Struts 2.3.30) and remediated by upgrading to 2.3.32 —
+> the same exploit no longer succeeds.
+>
+> Repository: <https://github.com/M1racle1234/my-project> ·
+> CI run: [#1 — Success](https://github.com/M1racle1234/my-project/actions/runs/39226969630)
 
 ---
 
@@ -270,15 +271,17 @@ Three jobs, all pinned to Python 3.12 on `ubuntu-latest`:
 `needs: test` means Bandit and pip-audit only run after the tests pass. Both reports are
 also appended to the **Actions run summary**, which is the easiest page to screenshot.
 
-**Screenshots of the reports are taken from the Actions tab of the public
-repository** (<https://github.com/M1racle1234/my-project/actions>) — see
-[`docs/screenshots/README.md`](docs/screenshots/README.md). The first workflow run starts
-automatically with the initial push; its link is recorded below once it finishes.
+The first public run completed successfully: **3/3 jobs green in 42 s** (`test` 17 s,
+`sast` 16 s, `sca` 19 s) with the two report artifacts attached.
 
-Repository: <https://github.com/M1racle1234/my-project>
+![Security CI run #1 — all three jobs green](docs/screenshots/01-actions-run.png)
 
-Latest run: pending the first push — see
-<https://github.com/M1racle1234/my-project/actions/workflows/ci.yml>.
+![Bandit and pip-audit artifacts](docs/screenshots/04-artifacts.png)
+
+Run: <https://github.com/M1racle1234/my-project/actions/runs/39226969630>
+
+GitHub reports three non-blocking annotations (Node.js 20 deprecation and the
+`ubuntu-latest` image migration note); neither affects the result.
 
 Local equivalents (real output captured in [`docs/evidence/`](docs/evidence/)):
 
@@ -448,21 +451,20 @@ demonstrated impact is command execution inside the container, not on the Window
 | Public git repository with project code | <https://github.com/M1racle1234/my-project> |
 | README: project and API description | this file, [API reference](#api-reference) |
 | README: security measures in detail | [Security measures](#security-measures) |
-| README: SAST/SCA screenshots from Actions | CI screenshots to be added after the first run (CVE screenshots are in `docs/screenshots/`) |
+| README: SAST/SCA screenshots from Actions | [`01-actions-run.png`](docs/screenshots/01-actions-run.png), [`04-artifacts.png`](docs/screenshots/04-artifacts.png) |
 | README: CVE ID and description | [CVE analysis](#cve-analysis-cve-2017-5638) |
 | README: reproduction sequence with commands/screenshots | [CVE analysis](#cve-analysis-cve-2017-5638) + [`cve/s2-045/README.md`](cve/s2-045/README.md) |
 | README: root cause analysis | section above + [`cve/s2-045/README.md`](cve/s2-045/README.md) |
 | README: fix description and proof of elimination | section above + [`docs/evidence/cve/`](docs/evidence/cve/) |
-| Link to last successful pipeline run | <https://github.com/M1racle1234/my-project/actions/workflows/ci.yml> |
+| Link to last successful pipeline run | <https://github.com/M1racle1234/my-project/actions/runs/39226969630> |
 | Folder with fixes (compose/Dockerfile/source) | [`cve/s2-045/`](cve/s2-045/) (`Dockerfile.fixed`, `docker-compose.fixed.yml`) |
 | Report with title page (work, variant, name, HDU number) | `Work1_Report_Pan_Hongzhou.docx` in the parent folder |
 
 ## Limitations and next steps
 
-- Screenshots from GitHub Actions require the repository to be pushed first; the CVE
-  evidence is captured as console transcripts in `docs/evidence/cve/` and should be
-  accompanied by screen captures from Docker Desktop/curl if the instructor requires
-  them.
+- GitHub Actions reports are captured as run/artifact screenshots because job logs and
+  artifact downloads require a signed-in GitHub session; the local Bandit/pip-audit
+  output is preserved in `docs/evidence/`.
 - The CVE experiment used the 2.3.x branch (2.3.30 → 2.3.32). The 2.5.x branch is fixed
   by 2.5.10.1; the same analysis applies.
 - SQLite is appropriate for the lab; a production deployment would use PostgreSQL and
