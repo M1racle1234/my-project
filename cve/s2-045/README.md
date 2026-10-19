@@ -70,6 +70,8 @@ The full payload is in `docs/evidence/cve/02-vulnerable-rce.txt`. The container 
 the impact is limited to the container in this lab, but on a real host it is full remote code
 execution as the servlet-container user.
 
+![Exploitation on the vulnerable build](../../docs/screenshots/11-exploit-before.png)
+
 ## 3. Root cause
 
 1. A multipart request reaches `JakartaMultiPartRequest.parseRequest()`.
@@ -121,6 +123,8 @@ Server: Jetty(9.2.11.v20150529)
 
 Regression check: the upload page still loads with HTTP 200. The fixed container reports
 `struts2-core-2.3.32.jar` in its local Maven repository.
+
+![Same requests against the fixed build](../../docs/screenshots/13-exploit-after.png)
 
 ## 6. Evidence files
 

@@ -360,6 +360,10 @@ uid=0(root) gid=0(root) groups=0(root)
 The container runs as root, so the impact inside the container is full command execution.
 See [`docs/evidence/cve/02-vulnerable-rce.txt`](docs/evidence/cve/02-vulnerable-rce.txt).
 
+![CVE-2017-5638 exploitation on the vulnerable Struts 2.3.30 build](docs/screenshots/11-exploit-before.png)
+
+*Figure 2. Vulnerable build: `vulhub: 54289` and `uid=0(root)` from the same console session.*
+
 ### Root cause
 
 1. A multipart request reaches `JakartaMultiPartRequest.parseRequest()`.
@@ -407,6 +411,10 @@ message-localization path no longer evaluates untrusted message parameters as OG
 The same two requests were replayed against the fixed build and both returned the normal
 "Struts2 Showcase - Fileupload sample" page. The fixed container's local Maven repository
 contains `struts2-core-2.3.32.jar`.
+
+![Same requests against the fixed Struts 2.3.32 build](docs/screenshots/13-exploit-after.png)
+
+*Figure 3. Fixed build: the same requests produce no `vulhub` header and no command output.*
 
 ### Evidence
 

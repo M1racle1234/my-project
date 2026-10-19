@@ -31,10 +31,10 @@ The experiment has been run; the console transcripts are in
 | File | What to capture |
 | --- | --- |
 | `10-vulhub-up.png` | `docker compose ps` with the vulnerable (2.3.30) and fixed (2.3.32) containers |
-| `11-exploit-before.png` | The S2-045 request returning `vulhub: 54289` and `uid=0(root)` |
-| `12-fix-config.png` | `cve/s2-045/Dockerfile.fixed` showing the 2.3.30 → 2.3.32 change |
-| `13-exploit-after.png` | The same requests on the fixed build: no `vulhub` header, no `uid` |
-| `14-regression.png` | The normal Struts upload page still loading on the fixed build |
+| `11-exploit-before.png` | **Captured** — `vulhub: 54289` and `uid=0(root)` on the vulnerable build |
+| `12-fix-config.png` | `cve/s2-045/Dockerfile.fixed` showing the 2.3.30 → 2.3.32 change (optional) |
+| `13-exploit-after.png` | **Captured** — same requests on the fixed build: no `vulhub` header, no `uid` |
+| `14-regression.png` | The normal Struts upload page still loading on the fixed build (optional) |
 
 If a live screen capture is not possible, quote the transcript files in the report; they
 are real command output, not reconstructions.
