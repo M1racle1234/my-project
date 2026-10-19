@@ -1,0 +1,25 @@
+﻿Local verification — 2026-10-19 16:07:57 +08:00
+Command: python -m bandit -r app -f txt
+
+Run started:2026-10-19 08:07:57.523489+00:00
+
+Test results:
+	No issues identified.
+
+Code scanned:
+	Total lines of code: 371
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 1
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 0
+Files skipped (0):

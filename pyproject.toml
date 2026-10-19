@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [".venv", "instance", "docs", ".pytest_tmp", ".test_data", ".tmp"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "C4", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv", "instance"]

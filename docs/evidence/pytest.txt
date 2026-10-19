@@ -1,0 +1,5 @@
+﻿Local verification — 2026-10-19 16:08:00 +08:00
+Command: .venv\Scripts\python.exe -m pytest
+
+...........................................................              [100%]
+59 passed in 1.79s

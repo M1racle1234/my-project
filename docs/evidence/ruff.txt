@@ -1,0 +1,4 @@
+﻿Local verification — 2026-10-19 16:08:00 +08:00
+Command: .venv\Scripts\python.exe -m ruff check .
+
+All checks passed!

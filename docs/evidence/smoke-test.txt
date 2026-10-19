@@ -1,0 +1,18 @@
+﻿Local verification — 2026-10-19 16:08:00 +08:00
+Command: .venv\Scripts\python.exe scripts\smoke_test.py --base-url http://127.0.0.1:5055
+
+PASS  unauthenticated /api/data is rejected (401)
+PASS  login returns 200
+PASS  login returns a JWT
+PASS  wrong password is rejected (401)
+PASS  SQL injection login is rejected (401)
+PASS  authenticated /api/data returns 200
+PASS  data contains seeded users
+PASS  SQL injection in search returns no rows
+PASS  note creation returns 201
+PASS  XSS payload is HTML-escaped
+PASS  raw script tag is absent
+PASS  note listing works and stays escaped
+PASS  note listing without token is rejected (401)
+
+13 passed, 0 failed

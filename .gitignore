@@ -1,0 +1,38 @@
+# Test/runtime scratch data
+.test_data/
+.pytest_tmp/
+.tmp/
+.pip-cache/
+.pip-audit-cache/
+.wordtmp/
+
+# Virtual environments
+.venv/
+venv/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Runtime data (SQLite database is created on first start)
+instance/
+*.db
+*.sqlite3
+
+# Local secrets
+.env
+
+# Generated security reports (the CI workflow uploads them as artifacts)
+bandit-report.*
+pip-audit-report.*
+coverage.xml
+
+# Editor / OS noise
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
