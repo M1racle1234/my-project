@@ -1,0 +1,8 @@
+﻿=== compose ps ===
+time="2026-10-19T16:38:03+08:00" level=warning msg="C:\\Users\\P\\Documents\\deepseek-harness\\default-workspace\\cve\\vulhub\\struts2\\s2-045\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+NAME                     IMAGE                   COMMAND                  SERVICE         CREATED          STATUS          PORTS
+s2-045-struts2-1         vulhub/struts2:2.3.30   "/usr/local/bin/mvn-…"   struts2         2 minutes ago    Up 2 minutes    0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+s2-045-struts2-fixed-1   s2-045-struts2-fixed    "/usr/local/bin/mvn-…"   struts2-fixed   51 seconds ago   Up 50 seconds   0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp
+NAME                     IMAGE                   COMMAND                  SERVICE         CREATED          STATUS          PORTS
+s2-045-struts2-1         vulhub/struts2:2.3.30   "/usr/local/bin/mvn-…"   struts2         2 minutes ago    Up 2 minutes    0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+s2-045-struts2-fixed-1   s2-045-struts2-fixed    "/usr/local/bin/mvn-…"   struts2-fixed   51 seconds ago   Up 50 seconds   0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp

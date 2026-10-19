@@ -1,0 +1,10 @@
+# Fixed S2-045 environment: Struts 2.3.32 (first 2.3.x release containing the fix)
+FROM vulhub/struts2:2.3.30
+
+WORKDIR /usr/src
+
+# Upgrade the vulnerable struts2-core and drop the cached 2.3.30 artifact so
+# Maven resolves the patched version from the local/remote repository.
+RUN sed -i 's|<version>2.3.30</version>|<version>2.3.32</version>|' pom.xml \
+    && rm -rf /root/.m2/repository/org/apache/struts/struts2-core/2.3.30 \
+    && rm -rf target

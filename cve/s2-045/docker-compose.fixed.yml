@@ -1,0 +1,7 @@
+services:
+  struts2-fixed:
+    build:
+      context: .
+      dockerfile: Dockerfile.fixed
+    ports:
+      - "8081:8080"

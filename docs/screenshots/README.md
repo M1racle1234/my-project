@@ -23,15 +23,21 @@ the names below; the report references them.
 | `08-notes-xss.png` | `POST /api/notes` with `<script>alert(1)</script>` and the escaped `&lt;script&gt;` in the response |
 | `09-pytest-local.png` | Local `pytest` run with `59 passed` (optional, complements the CI run) |
 
-## 3. CVE stage (after Docker is installed)
+## 3. CVE stage (already executed)
+
+The experiment has been run; the console transcripts are in
+[`../evidence/cve/`](../evidence/cve/). Capture the same moments as screen images:
 
 | File | What to capture |
 | --- | --- |
-| `10-vulhub-up.png` | `docker compose ps` with the Struts 2 container running |
-| `11-exploit-before.png` | The S2-045 request returning command output (`uid=...`) — vulnerable version |
-| `12-fix-config.png` | The changed Dockerfile / compose file (version bump) |
-| `13-exploit-after.png` | The same request against the fixed build: no command output |
-| `14-regression.png` | Normal application page/form still working after the fix |
+| `10-vulhub-up.png` | `docker compose ps` with the vulnerable (2.3.30) and fixed (2.3.32) containers |
+| `11-exploit-before.png` | The S2-045 request returning `vulhub: 54289` and `uid=0(root)` |
+| `12-fix-config.png` | `cve/s2-045/Dockerfile.fixed` showing the 2.3.30 → 2.3.32 change |
+| `13-exploit-after.png` | The same requests on the fixed build: no `vulhub` header, no `uid` |
+| `14-regression.png` | The normal Struts upload page still loading on the fixed build |
+
+If a live screen capture is not possible, quote the transcript files in the report; they
+are real command output, not reconstructions.
 
 ## Rules
 

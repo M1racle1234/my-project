@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Date: Mon, 19 Oct 2026 08:36:18 GMT
+vulhub: 54289
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: JSESSIONID=1q2he2ie62jzu1nwwwrgfdc6zh;Path=/
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 495
+Server: Jetty(9.2.11.v20150529)
+
