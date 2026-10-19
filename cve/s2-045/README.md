@@ -121,7 +121,8 @@ Server: Jetty(9.2.11.v20150529)
 - no `uid=...` body;
 - the normal "Struts2 Showcase - Fileupload sample" page is returned.
 
-Regression check: the upload page still loads with HTTP 200. The fixed container reports
+Regression check: a normal multipart upload to `/doUpload.action` (field `upload`, caption
+`regression`) returned HTTP 200 and the upload form; the fixed container reports
 `struts2-core-2.3.32.jar` in its local Maven repository.
 
 ![Same requests against the fixed build](../../docs/screenshots/13-exploit-after.png)
@@ -136,6 +137,7 @@ Regression check: the upload page still loads with HTTP 200. The fixed container
 | `docs/evidence/cve/03-fixed-version.txt` | installed `struts2-core-2.3.32.jar` |
 | `docs/evidence/cve/04-fixed-header.txt` | same header request after the fix |
 | `docs/evidence/cve/05-fixed-rce.txt` | same RCE request after the fix |
+| `docs/evidence/cve/06-regression.txt` | normal file upload still works |
 
 ## 7. Note on the port
 

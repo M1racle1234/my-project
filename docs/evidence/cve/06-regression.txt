@@ -1,0 +1,4 @@
+Functional regression test on the fixed build (Struts 2.3.32)
+Command: curl -F "upload=@sample-upload.txt" -F "caption=regression" http://192.168.3.9:8081/doUpload.action
+Result: HTTP 200
+The normal file-upload form was served after the request; no error page.

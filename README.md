@@ -426,6 +426,7 @@ contains `struts2-core-2.3.32.jar`.
 | [`docs/evidence/cve/03-fixed-version.txt`](docs/evidence/cve/03-fixed-version.txt) | `struts2-core-2.3.32.jar` |
 | [`docs/evidence/cve/04-fixed-header.txt`](docs/evidence/cve/04-fixed-header.txt) | same header request, no execution |
 | [`docs/evidence/cve/05-fixed-rce.txt`](docs/evidence/cve/05-fixed-rce.txt) | same RCE request, normal page |
+| [`docs/evidence/cve/06-regression.txt`](docs/evidence/cve/06-regression.txt) | normal file upload still returns HTTP 200 |
 
 **Environment note.** On this machine `127.0.0.1:8080` was already occupied by a local
 Chromium/CEF debugging listener, so the vulnerable container was reached via the LAN
