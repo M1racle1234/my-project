@@ -61,7 +61,6 @@ secure-notes-api/
 ├── scripts/smoke_test.py    # live end-to-end check against a running server
 ├── cve/s2-045/              # CVE fix: Dockerfile.fixed + docker-compose.fixed.yml
 ├── docs/
-│   ├── cve-2017-5638-plan.md
 │   ├── evidence/            # captured output of local test, scan and CVE runs
 │   └── screenshots/         # screenshot checklist for the report
 ├── .github/workflows/ci.yml # test + Bandit + pip-audit
@@ -458,7 +457,7 @@ demonstrated impact is command execution inside the container, not on the Window
 | README: fix description and proof of elimination | section above + [`docs/evidence/cve/`](docs/evidence/cve/) |
 | Link to last successful pipeline run | <https://github.com/M1racle1234/my-project/actions/runs/39226969630> |
 | Folder with fixes (compose/Dockerfile/source) | [`cve/s2-045/`](cve/s2-045/) (`Dockerfile.fixed`, `docker-compose.fixed.yml`) |
-| Report with title page (work, variant, name, HDU number) | `Work1_Report_Pan_Hongzhou.docx` in the parent folder |
+| Report with title page (work, variant, name, HDU number) | [`docs/report/Work1.docx`](docs/report/Work1.docx) |
 
 ## Limitations and next steps
 
